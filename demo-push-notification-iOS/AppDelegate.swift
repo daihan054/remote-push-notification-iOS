@@ -50,7 +50,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 //MARK: 2) Functions to push notifications if app is closed or killed from background
 extension AppDelegate {
-    // Direct device registration with APNs to enable Push Notifications
+    func customizeNotificationOnLaunch() {
+        // Override point for customization after application launch.
+        UNUserNotificationCenter.current().delegate = self
+        print("[LOCALLOG] App launched on the device")
+        
+        UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]) { (granted, err) in
+            DispatchQueue.main.async() {
+                UIApplication.shared.registerForRemoteNotifications()
+                print("[LOCALLOG] Request to show notifications successful")
+            }
+        }
+    }
+    
+    // didRegisterForRemoteNotificationsWithDeviceToken called after calling registerForRemoteNotifications functions. 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         print("[LOCALLOG] Registration for remote notifications successful")
         self.myDeviceToken = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
@@ -119,18 +132,5 @@ extension AppDelegate {
             realtime = ARTRealtime(options: ablyClientOptions)
         }
         return realtime
-    }
-    
-    func customizeNotificationOnLaunch() {
-        // Override point for customization after application launch.
-        UNUserNotificationCenter.current().delegate = self
-        print("[LOCALLOG] App launched on the device")
-        
-        UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]) { (granted, err) in
-            DispatchQueue.main.async() {
-                UIApplication.shared.registerForRemoteNotifications()
-                print("[LOCALLOG] Request to show notifications successful")
-            }
-        }
     }
 }
