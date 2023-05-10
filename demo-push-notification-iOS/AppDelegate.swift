@@ -57,13 +57,13 @@ extension AppDelegate {
         
         UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]) { (granted, err) in
             DispatchQueue.main.async() {
-                UIApplication.shared.registerForRemoteNotifications()
+                UIApplication.shared.registerForRemoteNotifications() 
                 print("[LOCALLOG] Request to show notifications successful")
             }
         }
     }
     
-    // didRegisterForRemoteNotificationsWithDeviceToken called after calling registerForRemoteNotifications functions. 
+    // didRegisterForRemoteNotificationsWithDeviceToken called after calling registerForRemoteNotifications functions.
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         print("[LOCALLOG] Registration for remote notifications successful")
         self.myDeviceToken = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
